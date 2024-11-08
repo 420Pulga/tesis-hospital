@@ -1,40 +1,20 @@
-import { API } from 'aws-amplify';
+import { Amplify } from 'aws-amplify';
+import config from './aws-exports.js';
 
-async function buscarDocumentos() {
-    const rut = document.getElementById("rut").value;
-    const resultadoDiv = document.getElementById("resultado");
-    resultadoDiv.innerHTML = "Buscando documentos...";
+Amplify.configure(config);
+
+const apiUrl = https://l7t44xcxezfj3cbu2fawykzw6e.appsync-api.us-east-1.amazonaws.com/graphql; // Reemplaza esto con la URL de tu API en Amplify
+
+document.getElementById("buscarBtn").addEventListener("click", async function() {
+    const rut = document.getElementById("rutInput").value;
 
     try {
-        const response = await API.graphql({
-            query: `query getDocumentosPorRut($rut: String!) {
-                getDocumentosPorRut(rut: $rut) {
-                    RUT
-                    NOMBRE
-                    APELLIDO_PATERNO
-                    APELLIDO_MATERNO
-                    # Agrega otros campos de la tabla DynamoDB según tus necesidades
-                }
-            }`,
-            variables: { rut }
-        });
-
-        const datos = response.data.getDocumentosPorRut;
-        if (datos) {
-            resultadoDiv.innerHTML = `
-                <table>
-                    <tr><th>RUT</th><td>${datos.RUT}</td></tr>
-                    <tr><th>Nombre</th><td>${datos.NOMBRE}</td></tr>
-                    <tr><th>Apellido Paterno</th><td>${datos.APELLIDO_PATERNO}</td></tr>
-                    <tr><th>Apellido Materno</th><td>${datos.APELLIDO_MATERNO}</td></tr>
-                    <!-- Añade otras filas para los campos adicionales -->
-                </table>
-            `;
-        } else {
-            resultadoDiv.innerHTML = "No se encontraron documentos para el RUT ingresado.";
-        }
+        const response = await fetch(`${apiUrl}/buscar-rut?rut=${rut}`);
+        const data = await response.json();
+        console.log(data); // Mostrar los datos en la consola o en la página
     } catch (error) {
-        console.error("Error al consultar DynamoDB", error);
-        resultadoDiv.innerHTML = "Error al consultar documentos.";
+        console.error("Error al llamar a la API", error);
     }
-}
+});
+
+
