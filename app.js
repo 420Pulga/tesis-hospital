@@ -17,4 +17,17 @@ document.getElementById("buscarBtn").addEventListener("click", async function() 
     }
 });
 
+import { API, graphqlOperation } from 'aws-amplify';
+import { createTesisHospitalExtractedText } from './graphql/mutations';
+import { getTesisHospitalExtractedText } from './graphql/queries';
+
+async function addDocument() {
+  const data = { DocumentID: "12345", RUT: "20.245.752-5" };
+  await API.graphql(graphqlOperation(createTesisHospitalExtractedText, { input: data }));
+}
+
+async function fetchDocument() {
+  const result = await API.graphql(graphqlOperation(getTesisHospitalExtractedText, { DocumentID: "12345" }));
+  console.log(result);
+}
 
